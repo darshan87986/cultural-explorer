@@ -1,0 +1,141 @@
+<!-- payment.html (Payment Page) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Platform - Payment</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        .payment-container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .payment-button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container payment-page">
+        <header>
+            <h1>Book Here</h1>
+        </header>
+        
+        <div class="payment-summary">
+            <h2>Order Summary</h2>
+            <div class="order-details">
+                <div class="order-item">
+                    <span>Book your guide</span>
+                    <span>₹1</span>
+                </div>
+                <div class="order-total">
+                    <span>Total</span>
+                    <span>₹1</span>
+                </div>
+            </div>
+            <button id="rzp-button" class="btn-primary">Pay Now</button>
+        </div>
+        
+        <div class="payment-info">
+            <h3>Secure Payment</h3>
+            <p>Your payment information is processed securely. We do not store your credit card details.</p>
+            <div class="payment-icons">
+                <span>Powered by</span>
+                <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxEPEBAQDRIQEBUQGRUZDxYQEBARGBUQGxgYFhUYHRUYHSggGR0xGxcYLTEtMSkrLi4uGR8zODMtNygtLisBCgoKDg0OGhAQGzclICY1NS0yLS8tKy0vLy0wLS0tLSstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBKwMBIgACEQEDEQH/xAAcAAEAAgMBAQEAAAAAAAAAAAAABgcEBQgBAwL/xABHEAABAwIDBQQGBwMJCQAAAAABAAIDBBEFEiEGBxMxQSJRYYEUMnGRoaIjQlJygpKxFTPBFhckVGJzlNLjCCU0U4OTo7LT/8QAGQEBAAMBAQAAAAAAAAAAAAAAAAECAwUE/8QAKBEBAAICAgEDAgcBAAAAAAAAAAECAxESITEEIkEjcQUTMlGhwfEU/9oADAMBAAIRAxEAPwC8UREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBEXhcBz6c0HqL40tUyVuaJwe25AI5Eg2Nj11X2Q3sREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQF5delQ7afawwvfBTDtt0e92oabXsB1OvX4rXDhvmtxpDLLmrirys3+MY1DStvK7U+q1urnewfxVe45tJNVXb+7j6Maef3j1/Ra6eOV7fSJczg91s7z6ztTpfny8l99n6TjVUEfQuBd91vaP6Lu4PR4sFJyW7mP4cbN6rJmtFI6iVoYLScCnhj6taM33ubvjdZyw8VrW00E08mjYWPe72NBd/Bc1R7b4tI4BtZVFzzo1hvqegaBdcKtLZZmztbikRDqFFzP/KTHf8Am4l/2pf8i+dPvAxaF9/TJiWntNlax49ha5tx8Cr/APPb4mEfmxHw6cRQ/dptgcWpnPla1k0BDZw2+Uki7XtvqAddOhBUwWExMTqWkTuNiIihIiIgIiICIiAiIgIi8ug9REQEREBERAReXS6D1ERAREQEREBEWDjGLwUcTpquRkLG8y48z3Ac3HwGqDNcdCqf2jxqjw58klYRV1Ti5wponDJGSbjiydOfLn4HmtNtrvYnqs0OG56a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" alt="Razorpay">
+            </div>
+        </div>
+    </div>
+
+    <div class="payment-container">
+        <h2>Complete Your Payment</h2>
+        <div id="booking-details">
+            <!-- Booking details will be inserted here -->
+        </div>
+        <button id="pay-button" class="payment-button">Pay Now (₹75)</button>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Web Development Course. All rights reserved.</p>
+    </footer>
+
+    <script>
+        <!-- payment.js (For Payment Page with Razorpay Integration) -->
+document.addEventListener('DOMContentLoaded', function() {
+    var options = {
+        // Replace with your Razorpay Key ID
+        key: " rzp_test_1a2b3c4d5e6f7g", // This is a test key, 
+        amount: 100, // Amount in paise (₹1)
+        currency: "INR",
+        name: "Web Development Course",
+        description: "Purchase for Full Stack Web Development Course",
+        image: "/api/placeholder/100/100", // Logo of your company
+        handler: function(response) {
+            // This function runs when payment is successful
+            alert("Payment successful! Payment ID: " + response.razorpay_payment_id);
+            
+            // Store payment status in localStorage
+            localStorage.setItem('paymentComplete', 'true');
+            
+            // Redirect to the course page
+            window.location.href = '/explore';
+        },
+        prefill: {
+            name: "",
+            email: "",
+            contact: ""
+        },
+        notes: {
+            address: "Your Company Address"
+        },
+        theme: {
+            color: "#2a41e8"
+        }
+    };
+    
+    var rzp = new Razorpay(options);
+    
+    document.getElementById('rzp-button').onclick = function(e) {
+        rzp.open();
+        e.preventDefault();
+    }
+});
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get booking details from localStorage
+            const pendingBooking = JSON.parse(localStorage.getItem('pendingBooking'));
+            
+            if (pendingBooking) {
+                document.getElementById('booking-details').innerHTML = `
+                    <p><strong>Place:</strong> ${pendingBooking.placeName}</p>
+                    <p><strong>Guide:</strong> ${pendingBooking.guideName}</p>
+                    <p><strong>Date:</strong> ${pendingBooking.date}</p>
+                    <p><strong>Amount:</strong> ₹${pendingBooking.amount}</p>
+                `;
+            }
+
+            document.getElementById('pay-button').addEventListener('click', function() {
+                // Simulate payment processing
+                setTimeout(() => {
+                    // Notify parent window of payment completion
+                    window.opener.postMessage('paymentComplete', '*');
+                    // Close payment window
+                    window.close();
+                }, 1500);
+            });
+        });
+    </script>
+</body>
+</html>
